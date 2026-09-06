@@ -1,0 +1,3153 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code de la Route - Vocab Mastery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Atma:wght@600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        duoGreen:'#58cc02', duoGreenDark:'#46a302', duoBlue:'#1cb0f6',
+                        duoBlueDark:'#1899d6', duoRed:'#ff4b4b', duoRedDark:'#ea2b2b',
+                        duoYellow:'#ffc800', duoOrange:'#ff9600', duoPurple:'#ce82ff',
+                        duoGray:'#e5e5e5', duoDark:'#3c3c3c'
+                    },
+                    fontFamily:{sans:['Nunito','sans-serif'],bangla:['Atma','Nunito','sans-serif']}
+                }
+            }
+        }
+    </script>
+    <style>
+        body{font-family:'Nunito',sans-serif;user-select:none;background:#f7f9fa}
+        .btn-3d{transition:all .1s ease;box-shadow:0 4px 0 var(--tw-shadow-color)}
+        .btn-3d:active{transform:translateY(4px);box-shadow:0 0 0 var(--tw-shadow-color)!important}
+        .perspective-1000{perspective:1000px}.transform-style-3d{transform-style:preserve-3d}
+        .backface-hidden{backface-visibility:hidden}.rotate-y-180{transform:rotateY(180deg)}
+        ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-track{background:#f1f1f1;border-radius:8px}
+        ::-webkit-scrollbar-thumb{background:#ccc;border-radius:8px}
+        @keyframes pulse-subtle{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+        .animate-pulse-subtle{animation:pulse-subtle 2s infinite}
+    </style>
+</head>
+<body class="h-full text-duoDark flex flex-col bg-slate-50 min-h-screen">
+
+<header class="bg-white border-b-2 border-slate-200 sticky top-0 z-40">
+ <div class="max-w-5xl mx-auto px-4 py-2.5 flex items-center justify-between">
+  <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('learn')">
+   <div class="w-10 h-10 bg-duoGreen rounded-2xl flex items-center justify-center text-white text-2xl shadow-md transform -rotate-3"><i class="fa-solid fa-car"></i></div>
+   <div><h1 class="font-extrabold text-xl leading-none text-slate-800 tracking-tight">Code<span class="text-duoGreen">Vocab</span></h1><p class="text-xs font-semibold text-slate-400">Permis de Conduire</p></div>
+  </div>
+  <div class="flex items-center space-x-3 sm:space-x-5">
+   <div class="bg-slate-100 p-1 rounded-xl flex items-center border border-slate-200">
+    <button id="lang-en-btn" onclick="setTargetLanguage('en')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-white text-duoBlue shadow-sm">🇬🇧 EN</button>
+    <button id="lang-bn-btn" onclick="setTargetLanguage('bn')" class="px-2.5 py-1 rounded-lg text-xs font-bold text-slate-500">🇧🇩 BN</button>
+   </div>
+   <div class="flex items-center space-x-1 text-duoOrange font-extrabold"><i class="fa-solid fa-fire text-lg"></i><span id="streak-count">1</span></div>
+   <div class="flex items-center space-x-1 text-duoYellow font-extrabold"><i class="fa-solid fa-bolt text-lg"></i><span id="xp-count">0</span></div>
+   <button onclick="openAdminModal()" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 rounded-xl flex items-center justify-center text-slate-600" title="Admin Panel"><i class="fa-solid fa-gear"></i></button>
+  </div>
+ </div>
+</header>
+
+<main class="flex-grow max-w-4xl w-full mx-auto p-4 md:p-6 mb-16 md:mb-0">
+<section id="tab-learn" class="space-y-6">
+ <div class="bg-white p-3 rounded-2xl border-2 border-slate-200 shadow-sm">
+  <div id="learn-category-bar" class="flex gap-2 overflow-x-auto pb-1"></div>
+ </div>
+ <div class="flex flex-col items-center justify-center pt-2">
+  <div id="flashcard" onclick="flipCard()" class="w-full max-w-md h-80 perspective-1000 cursor-pointer">
+   <div id="flashcard-inner" class="relative w-full h-full transform-style-3d transition-transform duration-500 rounded-3xl border-b-8 border-2 border-slate-200 bg-white shadow-xl p-6 text-center">
+    <div class="absolute inset-0 backface-hidden p-6 flex flex-col justify-between items-center rounded-3xl bg-white">
+     <div class="w-full flex justify-between items-center"><span id="fc-category" class="bg-emerald-100 text-emerald-700 text-xs font-black uppercase px-3 py-1 rounded-full">Signaux</span>
+      <button onclick="event.stopPropagation();speakCurrentWord()" class="w-10 h-10 bg-duoBlue/10 hover:bg-duoBlue/20 text-duoBlue rounded-full flex items-center justify-center"><i class="fa-solid fa-volume-high"></i></button>
+     </div>
+     <div class="my-auto space-y-2"><i id="fc-icon" class="fa-solid fa-triangle-exclamation text-4xl text-duoGreen mb-2"></i>
+      <h2 id="fc-french" class="text-2xl sm:text-3xl font-black text-slate-800 tracking-wide">Céder le passage</h2>
+      <p id="fc-phonetic" class="text-sm font-bold text-slate-400 italic"></p>
+     </div>
+     <p class="text-xs font-extrabold text-slate-300 uppercase tracking-widest"><i class="fa-solid fa-rotate"></i> Cliquer pour retourner</p>
+    </div>
+    <div class="absolute inset-0 backface-hidden rotate-y-180 p-6 flex flex-col justify-between items-center rounded-3xl bg-slate-900 text-white">
+     <div class="w-full flex justify-between items-center"><span class="bg-slate-700 text-slate-200 text-xs font-black uppercase px-3 py-1 rounded-full">Traduction</span>
+      <button onclick="event.stopPropagation();speakCurrentWord()" class="w-10 h-10 bg-slate-800 text-duoBlue rounded-full flex items-center justify-center"><i class="fa-solid fa-volume-high"></i></button>
+     </div>
+     <div class="my-auto space-y-3"><h3 id="fc-translation" class="text-2xl sm:text-3xl font-black text-duoYellow">Give way / Yield</h3>
+      <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700"><p id="fc-example" class="text-sm text-slate-300 italic"></p></div>
+     </div>
+     <p class="text-xs font-extrabold text-slate-400 uppercase tracking-widest">Indication de sécurité</p>
+    </div>
+   </div>
+  </div>
+  <div class="flex items-center space-x-4 mt-6">
+   <button onclick="prevCard()" class="btn-3d w-14 h-14 bg-white border-2 border-slate-200 shadow-slate-200 text-slate-600 rounded-2xl"><i class="fa-solid fa-arrow-left"></i></button>
+   <button onclick="speakCurrentWord()" class="btn-3d px-6 h-14 bg-duoBlue shadow-duoBlueDark text-white rounded-2xl flex items-center space-x-2 font-extrabold"><i class="fa-solid fa-volume-high"></i><span>Écouter</span></button>
+   <button onclick="nextCard()" class="btn-3d w-14 h-14 bg-white border-2 border-slate-200 shadow-slate-200 text-slate-600 rounded-2xl"><i class="fa-solid fa-arrow-right"></i></button>
+  </div>
+  <span id="flashcard-counter" class="text-xs font-bold text-slate-400 mt-3">1 / 292</span>
+ </div>
+</section>
+
+<section id="tab-quiz" class="hidden space-y-6">
+ <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm flex items-center space-x-4">
+  <button onclick="switchTab('learn')" class="text-slate-400"><i class="fa-solid fa-xmark text-xl"></i></button>
+  <div class="flex-grow bg-slate-200 h-4 rounded-full overflow-hidden"><div id="quiz-progress" class="bg-duoGreen h-full w-0 transition-all"></div></div>
+  <div class="flex items-center space-x-1 text-duoRed font-bold"><i class="fa-solid fa-heart"></i><span id="quiz-lives">3</span></div>
+ </div>
+ <div class="bg-white rounded-3xl border-b-8 border-2 border-slate-200 p-6 sm:p-8 space-y-6 shadow-sm">
+  <div><span class="text-xs font-black uppercase text-duoBlue">Quiz - Traduction</span><h2 class="text-xl sm:text-2xl font-black text-slate-800">Choisissez la bonne traduction pour :</h2></div>
+  <div class="bg-slate-50 border-2 border-slate-200 p-4 rounded-2xl flex items-center justify-between">
+   <div class="flex items-center space-x-3"><button onclick="speakQuizWord()" class="w-12 h-12 bg-duoBlue text-white rounded-xl text-xl shadow-md btn-3d shadow-duoBlueDark"><i class="fa-solid fa-volume-high"></i></button>
+    <div><h3 id="quiz-target-word" class="text-2xl font-black text-slate-800">Priorité à droite</h3><p class="text-xs font-bold text-slate-400">Écoutez la prononciation</p></div>
+   </div>
+  </div>
+  <div id="quiz-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2"></div>
+ </div>
+ <div id="quiz-footer" class="hidden rounded-2xl p-4 flex items-center justify-between border-2 transition-all">
+  <div class="flex items-center space-x-3"><div id="quiz-status-icon" class="w-10 h-10 rounded-full flex items-center justify-center text-xl text-white font-bold"></div>
+   <div><h4 id="quiz-status-title" class="font-extrabold text-base"></h4><p id="quiz-status-desc" class="text-xs font-semibold text-slate-600"></p></div>
+  </div>
+  <button id="quiz-next-btn" onclick="nextQuizQuestion()" class="btn-3d px-6 py-3 bg-duoGreen shadow-duoGreenDark text-white font-extrabold rounded-xl">Continuer</button>
+ </div>
+</section>
+
+<section id="tab-dictionary" class="hidden space-y-4">
+ <div class="bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm space-y-3">
+  <div class="relative"><i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+   <input type="text" id="dict-search-input" onkeyup="filterDictionary()" placeholder="Rechercher un mot (Français, English, বাংলা)..." class="w-full pl-11 pr-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold text-sm focus:outline-none focus:border-duoBlue">
+  </div>
+  <div id="dict-category-bar" class="flex flex-wrap gap-2"></div>
+ </div>
+ <div class="flex items-center justify-between px-1"><span class="text-xs font-bold text-slate-400"><span id="dict-count">0</span> mots</span><span class="text-xs text-slate-400">Français → English / বাংলা</span></div>
+ <div id="dict-list" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+</section>
+</main>
+
+<nav class="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-slate-200 z-30">
+ <div class="max-w-md mx-auto flex justify-around py-2">
+  <button onclick="switchTab('learn')" id="nav-btn-learn" class="nav-tab flex flex-col items-center space-y-1 text-duoGreen font-extrabold text-xs"><i class="fa-solid fa-layer-group text-xl"></i><span>Apprendre</span></button>
+  <button onclick="switchTab('quiz')" id="nav-btn-quiz" class="nav-tab flex flex-col items-center space-y-1 text-slate-400 font-extrabold text-xs"><i class="fa-solid fa-gamepad text-xl"></i><span>Jeu Quiz</span></button>
+  <button onclick="switchTab('dictionary')" id="nav-btn-dictionary" class="nav-tab flex flex-col items-center space-y-1 text-slate-400 font-extrabold text-xs"><i class="fa-solid fa-book text-xl"></i><span>Dictionnaire</span></button>
+ </div>
+</nav>
+
+<div id="admin-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+ <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col border-2 border-slate-200 shadow-2xl">
+  <div class="p-4 bg-slate-50 border-b-2 border-slate-200 flex items-center justify-between"><div class="flex items-center space-x-2"><div class="w-8 h-8 bg-duoPurple text-white rounded-xl flex items-center justify-center"><i class="fa-solid fa-sliders"></i></div><h3 class="font-extrabold text-lg">Panneau d'Administration</h3></div>
+   <button onclick="closeAdminModal()" class="text-slate-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="p-6 overflow-y-auto space-y-6">
+   <form id="add-vocab-form" onsubmit="handleAddNewVocab(event)" class="space-y-4">
+    <h4 class="font-extrabold text-sm uppercase text-slate-400 tracking-wider">Ajouter un nouveau vocabulaire</h4>
+    <div><label class="block text-xs font-bold text-slate-600 mb-1">Mot / Expression en Français *</label><input type="text" id="input-fr" required class="w-full px-3 py-2 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold text-sm"></div>
+    <div class="grid grid-cols-2 gap-3"><div><label class="block text-xs font-bold text-slate-600 mb-1">English Translation *</label><input type="text" id="input-en" required class="w-full px-3 py-2 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold text-sm"></div>
+     <div><label class="block text-xs font-bold text-slate-600 mb-1">Bangla Meaning *</label><input type="text" id="input-bn" required class="w-full px-3 py-2 font-bangla bg-slate-50 border-2 border-slate-200 rounded-xl font-bold text-sm"></div></div>
+    <div class="grid grid-cols-2 gap-3"><div><label class="block text-xs font-bold text-slate-600 mb-1">Catégorie</label><select id="input-cat" class="w-full px-3 py-2 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold text-sm"></select></div>
+     <div><label class="block text-xs font-bold text-slate-600 mb-1">Phonétique</label><input type="text" id="input-phonetic" class="w-full px-3 py-2 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold text-sm"></div></div>
+    <div><label class="block text-xs font-bold text-slate-600 mb-1">Exemple</label><input type="text" id="input-example" class="w-full px-3 py-2 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold text-sm"></div>
+    <button type="submit" class="btn-3d w-full py-3 bg-duoGreen shadow-duoGreenDark text-white font-extrabold rounded-xl"><i class="fa-solid fa-plus mr-1"></i> Enregistrer</button>
+   </form>
+   <hr class="border-slate-200">
+   <div class="space-y-3"><div class="flex items-center justify-between"><h4 class="font-extrabold text-sm uppercase text-slate-400">Vocabulaire (<span id="admin-total-count">0</span>)</h4><button onclick="resetToDefaultData()" class="text-xs font-extrabold text-duoRed hover:underline">Réinitialiser</button></div>
+    <div id="admin-vocab-list" class="max-h-52 overflow-y-auto space-y-2 pr-1"></div>
+   </div>
+  </div>
+ </div>
+</div>
+
+<script>
+const defaultVocabulary = [
+            {
+                        "id": "1",
+                        "fr": "Céder le passage",
+                        "en": "Give way / Yield",
+                        "bn": "পথ ছেড়ে দেওয়া (ইয়েল্ড)",
+                        "category": "Signaux",
+                        "phonetic": "say-day luh pah-sahzh",
+                        "example": "Vous devez céder le passage aux véhicules venant de droite.",
+                        "icon": "fa-triangle-exclamation"
+            },
+            {
+                        "id": "2",
+                        "fr": "Priorité à droite",
+                        "en": "Priority to the right",
+                        "bn": "ডানদিকের যানবাহনের অগ্রাধিকার",
+                        "category": "Priorités",
+                        "phonetic": "pree-oh-ree-tay ah drwat",
+                        "example": "En l'absence de panneaux, la priorité à droite s'applique.",
+                        "icon": "fa-arrow-right"
+            },
+            {
+                        "id": "3",
+                        "fr": "Dépasser",
+                        "en": "To overtake / Pass",
+                        "bn": "ওভারটেক করা",
+                        "category": "Règles",
+                        "phonetic": "day-pah-say",
+                        "example": "Il est interdit de dépasser sur une ligne continue.",
+                        "icon": "fa-car-side"
+            },
+            {
+                        "id": "4",
+                        "fr": "Stationnement gênant",
+                        "en": "Obstructive parking",
+                        "bn": "বাধা সৃষ্টিকারী পার্কিং",
+                        "category": "Règles",
+                        "phonetic": "stah-syohn-mahn zhay-nahn",
+                        "example": "Un stationnement gênant peut entraîner une mise en fourrière.",
+                        "icon": "fa-square-parking"
+            },
+            {
+                        "id": "5",
+                        "fr": "Ceinture de sécurité",
+                        "en": "Seat belt",
+                        "bn": "সিট বেল্ট",
+                        "category": "Véhicule",
+                        "phonetic": "saing-tyoor duh say-kyoo-ree-tay",
+                        "example": "Le port de la ceinture de sécurité est obligatoire pour tous.",
+                        "icon": "fa-user-shield"
+            },
+            {
+                        "id": "6",
+                        "fr": "Feux de détresse",
+                        "en": "Hazard warning lights",
+                        "bn": "বিপদসংকেত বাতি (হাজার্ড লাইট)",
+                        "category": "Véhicule",
+                        "phonetic": "fuh duh day-tress",
+                        "example": "Allumez les feux de détresse en cas de panne ou de ralentissement brusque.",
+                        "icon": "fa-triangle-exclamation"
+            },
+            {
+                        "id": "7",
+                        "fr": "Permis de conduire",
+                        "en": "Driving license",
+                        "bn": "ড্রাইভিং লাইসেন্স",
+                        "category": "Règles",
+                        "phonetic": "pair-mee duh kohn-dweer",
+                        "example": "Vous devez être titulaire du permis de conduire requis.",
+                        "icon": "fa-id-card"
+            },
+            {
+                        "id": "8",
+                        "fr": "Témoin lumineux",
+                        "en": "Warning dashboard light",
+                        "bn": "ড্যাশবোর্ড সতর্কীকরণ লাইট",
+                        "category": "Véhicule",
+                        "phonetic": "tay-mwah loo-mee-nuh",
+                        "example": "Un témoin lumineux peut signaler un problème.",
+                        "icon": "fa-lightbulb"
+            },
+            {
+                        "id": "9",
+                        "fr": "Rétroviseur",
+                        "en": "Rearview mirror",
+                        "bn": "লুকিং গ্লাস / আয়না",
+                        "category": "Véhicule",
+                        "phonetic": "ray-troh-vee-zuhr",
+                        "example": "Réglez vos rétroviseurs avant de démarrer.",
+                        "icon": "fa-eye"
+            },
+            {
+                        "id": "10",
+                        "fr": "Chaussée glissante",
+                        "en": "Slippery road",
+                        "bn": "পিচ্ছিল রাস্তা",
+                        "category": "Météo",
+                        "phonetic": "shoh-say glee-sahnt",
+                        "example": "Ralentissez sur une chaussée glissante.",
+                        "icon": "fa-road"
+            },
+            {
+                        "id": "11",
+                        "fr": "Rond-point",
+                        "en": "Roundabout",
+                        "bn": "গোলচত্বর (রাউন্ডঅ্যাবাউট)",
+                        "category": "Priorités",
+                        "phonetic": "rohn-pwan",
+                        "example": "Cédez le passage selon la signalisation du rond-point.",
+                        "icon": "fa-arrows-spin"
+            },
+            {
+                        "id": "12",
+                        "fr": "Bande d'arrêt d'urgence",
+                        "en": "Emergency lane / hard shoulder",
+                        "bn": "জরুরি লেন",
+                        "category": "Autoroute",
+                        "phonetic": "bahnd dah-ray goor-zhahns",
+                        "example": "Ne roulez jamais sur la bande d'arrêt d'urgence.",
+                        "icon": "fa-road"
+            },
+            {
+                        "id": "13",
+                        "fr": "Poste de secours",
+                        "en": "First aid station",
+                        "bn": "প্রাথমিক চিকিৎসা কেন্দ্র",
+                        "category": "Secourisme",
+                        "phonetic": "pohst duh suh-koor",
+                        "example": "En cas d'accident grave, prévenez immédiatement les secours.",
+                        "icon": "fa-kit-medical"
+            },
+            {
+                        "id": "14",
+                        "fr": "Alcoolémie",
+                        "en": "Blood alcohol level",
+                        "bn": "রক্তে অ্যালকোহলের পরিমাণ",
+                        "category": "Règles",
+                        "phonetic": "ahl-koh-lay-mee",
+                        "example": "L'alcoolémie se mesure dans le sang ou l'air expiré.",
+                        "icon": "fa-wine-bottle"
+            },
+            {
+                        "id": "15",
+                        "fr": "Pneu dégonflé",
+                        "en": "Under-inflated tire",
+                        "bn": "হাওয়া কম থাকা টায়ার",
+                        "category": "Véhicule",
+                        "phonetic": "pnuh day-gohn-flay",
+                        "example": "Un pneu dégonflé peut réduire l'adhérence.",
+                        "icon": "fa-circle-notch"
+            },
+            {
+                        "id": "16",
+                        "fr": "Accotement",
+                        "en": "Shoulder / verge",
+                        "bn": "পাশের রাস্তার অংশ",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Accotement » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "17",
+                        "fr": "Chaussée",
+                        "en": "Carriageway / roadway",
+                        "bn": "সড়কের চলাচলের অংশ",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Chaussée » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "18",
+                        "fr": "Voie de circulation",
+                        "en": "Traffic lane",
+                        "bn": "চলাচলের লেন",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Voie de circulation » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "19",
+                        "fr": "File de circulation",
+                        "en": "Lane / line of traffic",
+                        "bn": "যান চলাচলের সারি",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « File de circulation » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "20",
+                        "fr": "Sens de circulation",
+                        "en": "Direction of traffic",
+                        "bn": "চলাচলের দিক",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Sens de circulation » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "21",
+                        "fr": "Terre-plein central",
+                        "en": "Central reservation / median",
+                        "bn": "মাঝের বিভাজক অংশ",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Terre-plein central » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "22",
+                        "fr": "Îlot directionnel",
+                        "en": "Traffic island",
+                        "bn": "দিক নির্দেশক দ্বীপ",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Îlot directionnel » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "23",
+                        "fr": "Refuge",
+                        "en": "Pedestrian refuge",
+                        "bn": "নিরাপদ আশ্রয় দ্বীপ",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Refuge » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "24",
+                        "fr": "Trottoir",
+                        "en": "Sidewalk / pavement",
+                        "bn": "ফুটপাত",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Trottoir » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "25",
+                        "fr": "Passage piéton",
+                        "en": "Pedestrian crossing",
+                        "bn": "জেব্রা ক্রসিং",
+                        "category": "Priorités",
+                        "phonetic": "",
+                        "example": "Le terme « Passage piéton » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "26",
+                        "fr": "Bande cyclable",
+                        "en": "Cycle lane",
+                        "bn": "সাইকেল লেন",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Bande cyclable » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "27",
+                        "fr": "Piste cyclable",
+                        "en": "Cycle track",
+                        "bn": "সাইকেল পথ",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Piste cyclable » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "28",
+                        "fr": "Voie réservée",
+                        "en": "Reserved lane",
+                        "bn": "নির্ধারিত লেন",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Voie réservée » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "29",
+                        "fr": "Voie de bus",
+                        "en": "Bus lane",
+                        "bn": "বাস লেন",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Voie de bus » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "30",
+                        "fr": "Voie d'insertion",
+                        "en": "Acceleration / merging lane",
+                        "bn": "প্রবেশ বা মার্জিং লেন",
+                        "category": "Autoroute",
+                        "phonetic": "",
+                        "example": "Le terme « Voie d'insertion » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "31",
+                        "fr": "Voie de décélération",
+                        "en": "Deceleration lane",
+                        "bn": "গতি কমানোর লেন",
+                        "category": "Autoroute",
+                        "phonetic": "",
+                        "example": "Le terme « Voie de décélération » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "32",
+                        "fr": "Voie d'entrecroisement",
+                        "en": "Weaving lane",
+                        "bn": "মিশ্র/উইভিং লেন",
+                        "category": "Autoroute",
+                        "phonetic": "",
+                        "example": "Le terme « Voie d'entrecroisement » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "33",
+                        "fr": "Bretelle",
+                        "en": "Slip road / ramp",
+                        "bn": "সংযোগ র‍্যাম্প",
+                        "category": "Autoroute",
+                        "phonetic": "",
+                        "example": "Le terme « Bretelle » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "34",
+                        "fr": "Échangeur",
+                        "en": "Interchange",
+                        "bn": "সড়ক সংযোগ ব্যবস্থা",
+                        "category": "Autoroute",
+                        "phonetic": "",
+                        "example": "Le terme « Échangeur » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "35",
+                        "fr": "Aire de repos",
+                        "en": "Rest area",
+                        "bn": "বিশ্রাম এলাকা",
+                        "category": "Autoroute",
+                        "phonetic": "",
+                        "example": "Le terme « Aire de repos » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "36",
+                        "fr": "Aire de service",
+                        "en": "Service area",
+                        "bn": "সার্ভিস এলাকা",
+                        "category": "Autoroute",
+                        "phonetic": "",
+                        "example": "Le terme « Aire de service » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "37",
+                        "fr": "Péage",
+                        "en": "Toll",
+                        "bn": "টোল",
+                        "category": "Autoroute",
+                        "phonetic": "",
+                        "example": "Le terme « Péage » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "38",
+                        "fr": "Barrière de péage",
+                        "en": "Toll barrier",
+                        "bn": "টোল ব্যারিয়ার",
+                        "category": "Autoroute",
+                        "phonetic": "",
+                        "example": "Le terme « Barrière de péage » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "39",
+                        "fr": "Télépéage",
+                        "en": "Electronic toll collection",
+                        "bn": "ইলেকট্রনিক টোল",
+                        "category": "Autoroute",
+                        "phonetic": "",
+                        "example": "Le terme « Télépéage » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "40",
+                        "fr": "Autoroute",
+                        "en": "Motorway / freeway",
+                        "bn": "মহাসড়ক",
+                        "category": "Autoroute",
+                        "phonetic": "",
+                        "example": "Le terme « Autoroute » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "41",
+                        "fr": "Route à chaussées séparées",
+                        "en": "Dual carriageway",
+                        "bn": "বিভক্ত সড়ক",
+                        "category": "Autoroute",
+                        "phonetic": "",
+                        "example": "Le terme « Route à chaussées séparées » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "42",
+                        "fr": "Route à double sens",
+                        "en": "Two-way road",
+                        "bn": "দুইমুখী সড়ক",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Route à double sens » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "43",
+                        "fr": "Agglomération",
+                        "en": "Built-up area",
+                        "bn": "শহর/বসতিপূর্ণ এলাকা",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Agglomération » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "44",
+                        "fr": "Hors agglomération",
+                        "en": "Outside built-up area",
+                        "bn": "শহরের বাইরে",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Hors agglomération » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "45",
+                        "fr": "Intersection",
+                        "en": "Intersection / junction",
+                        "bn": "চৌরাস্তা/সংযোগস্থল",
+                        "category": "Priorités",
+                        "phonetic": "",
+                        "example": "Le terme « Intersection » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "46",
+                        "fr": "Carrefour",
+                        "en": "Junction / crossroads",
+                        "bn": "চৌরাস্তা",
+                        "category": "Priorités",
+                        "phonetic": "",
+                        "example": "Le terme « Carrefour » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "47",
+                        "fr": "Carrefour à sens giratoire",
+                        "en": "Roundabout junction",
+                        "bn": "গোলচত্বর সংযোগস্থল",
+                        "category": "Priorités",
+                        "phonetic": "",
+                        "example": "Le terme « Carrefour à sens giratoire » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "48",
+                        "fr": "Giratoire",
+                        "en": "Roundabout",
+                        "bn": "গোলচত্বর",
+                        "category": "Priorités",
+                        "phonetic": "",
+                        "example": "Le terme « Giratoire » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "49",
+                        "fr": "Croisement",
+                        "en": "Passing / crossing of vehicles",
+                        "bn": "যানবাহনের পারস্পরিক অতিক্রম",
+                        "category": "Priorités",
+                        "phonetic": "",
+                        "example": "Le terme « Croisement » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "50",
+                        "fr": "Virage",
+                        "en": "Bend / curve",
+                        "bn": "বাঁক",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Virage » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "51",
+                        "fr": "Virage dangereux",
+                        "en": "Dangerous bend",
+                        "bn": "বিপজ্জনক বাঁক",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Virage dangereux » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "52",
+                        "fr": "Descente",
+                        "en": "Downhill slope",
+                        "bn": "নিম্নমুখী ঢাল",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Descente » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "53",
+                        "fr": "Montée",
+                        "en": "Uphill slope",
+                        "bn": "উর্ধ্বমুখী ঢাল",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Montée » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "54",
+                        "fr": "Pente",
+                        "en": "Slope / gradient",
+                        "bn": "ঢাল",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Pente » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "55",
+                        "fr": "Sommet",
+                        "en": "Crest / top of a hill",
+                        "bn": "পাহাড়/ঢালের চূড়া",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Sommet » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "56",
+                        "fr": "Visibilité",
+                        "en": "Visibility",
+                        "bn": "দৃশ্যমানতা",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Visibilité » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "57",
+                        "fr": "Visibilité réduite",
+                        "en": "Reduced visibility",
+                        "bn": "কম দৃশ্যমানতা",
+                        "category": "Météo",
+                        "phonetic": "",
+                        "example": "Le terme « Visibilité réduite » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "58",
+                        "fr": "Obstacle",
+                        "en": "Obstacle",
+                        "bn": "বাধা",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Obstacle » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "59",
+                        "fr": "Travaux",
+                        "en": "Roadworks",
+                        "bn": "রাস্তার কাজ",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Travaux » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "60",
+                        "fr": "Chantier",
+                        "en": "Construction site",
+                        "bn": "নির্মাণকাজের এলাকা",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Chantier » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "61",
+                        "fr": "Déviation",
+                        "en": "Detour",
+                        "bn": "বিকল্প পথ",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Déviation » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "62",
+                        "fr": "Bouchon",
+                        "en": "Traffic jam",
+                        "bn": "যানজট",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Bouchon » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "63",
+                        "fr": "Embouteillage",
+                        "en": "Traffic jam / congestion",
+                        "bn": "তীব্র যানজট",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Embouteillage » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "64",
+                        "fr": "Circulation alternée",
+                        "en": "Alternating traffic",
+                        "bn": "পালা করে চলাচল",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Circulation alternée » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "65",
+                        "fr": "Signalisation",
+                        "en": "Road signs / signaling",
+                        "bn": "সড়ক সংকেত ব্যবস্থা",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Signalisation » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "66",
+                        "fr": "Panneau",
+                        "en": "Road sign",
+                        "bn": "সড়ক চিহ্ন",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Panneau » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "67",
+                        "fr": "Panneau de danger",
+                        "en": "Warning sign",
+                        "bn": "বিপদের সংকেত",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Panneau de danger » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "68",
+                        "fr": "Panneau d'interdiction",
+                        "en": "Prohibition sign",
+                        "bn": "নিষেধাজ্ঞার চিহ্ন",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Panneau d'interdiction » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "69",
+                        "fr": "Panneau d'obligation",
+                        "en": "Mandatory sign",
+                        "bn": "বাধ্যতামূলক চিহ্ন",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Panneau d'obligation » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "70",
+                        "fr": "Panneau d'indication",
+                        "en": "Information sign",
+                        "bn": "তথ্যসূচক চিহ্ন",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Panneau d'indication » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "71",
+                        "fr": "Panneau de priorité",
+                        "en": "Priority sign",
+                        "bn": "অগ্রাধিকার চিহ্ন",
+                        "category": "Priorités",
+                        "phonetic": "",
+                        "example": "Le terme « Panneau de priorité » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "72",
+                        "fr": "Panneau temporaire",
+                        "en": "Temporary road sign",
+                        "bn": "অস্থায়ী সড়ক চিহ্ন",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Panneau temporaire » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "73",
+                        "fr": "Panonceau",
+                        "en": "Supplementary plate",
+                        "bn": "অতিরিক্ত ফলক",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Panonceau » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "74",
+                        "fr": "Balise",
+                        "en": "Delineator / marker",
+                        "bn": "রাস্তার নির্দেশক খুঁটি",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Balise » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "75",
+                        "fr": "Balise J1",
+                        "en": "Roadside marker post",
+                        "bn": "রাস্তার পাশের নির্দেশক",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Balise J1 » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "76",
+                        "fr": "Balise J3",
+                        "en": "Level-crossing marker",
+                        "bn": "রেলক্রসিং নির্দেশক",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Balise J3 » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "77",
+                        "fr": "Jalon",
+                        "en": "Marker / guide post",
+                        "bn": "নির্দেশক খুঁটি",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Jalon » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "78",
+                        "fr": "Glissière de sécurité",
+                        "en": "Safety barrier / guardrail",
+                        "bn": "নিরাপত্তা রেলিং",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Glissière de sécurité » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "79",
+                        "fr": "Barrière",
+                        "en": "Barrier",
+                        "bn": "ব্যারিয়ার",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Barrière » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "80",
+                        "fr": "Barrière de sécurité",
+                        "en": "Safety barrier",
+                        "bn": "নিরাপত্তা ব্যারিয়ার",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Barrière de sécurité » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "81",
+                        "fr": "Ligne continue",
+                        "en": "Solid line",
+                        "bn": "অবিচ্ছিন্ন লাইন",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Ligne continue » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "82",
+                        "fr": "Ligne discontinue",
+                        "en": "Broken line",
+                        "bn": "বিচ্ছিন্ন লাইন",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Ligne discontinue » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "83",
+                        "fr": "Ligne de dissuasion",
+                        "en": "Warning / deterrent broken line",
+                        "bn": "ওভারটেক নিরুৎসাহিতকারী লাইন",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Ligne de dissuasion » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "84",
+                        "fr": "Ligne de rive",
+                        "en": "Edge line",
+                        "bn": "রাস্তার প্রান্তের লাইন",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Ligne de rive » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "85",
+                        "fr": "Ligne médiane",
+                        "en": "Centre line",
+                        "bn": "মধ্যরেখা",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Ligne médiane » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "86",
+                        "fr": "Marquage au sol",
+                        "en": "Road markings",
+                        "bn": "রাস্তার মাটির চিহ্ন",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Marquage au sol » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "87",
+                        "fr": "Flèche directionnelle",
+                        "en": "Direction arrow",
+                        "bn": "দিক নির্দেশক তীর",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Flèche directionnelle » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "88",
+                        "fr": "Flèche de rabattement",
+                        "en": "Lane-change arrow",
+                        "bn": "লেন পরিবর্তনের তীর",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Flèche de rabattement » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "89",
+                        "fr": "Zébra",
+                        "en": "Hatched area",
+                        "bn": "হ্যাচড/জেব্রা এলাকা",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Zébra » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "90",
+                        "fr": "Passage à niveau",
+                        "en": "Level crossing",
+                        "bn": "রেলক্রসিং",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Passage à niveau » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "91",
+                        "fr": "Croix de Saint-André",
+                        "en": "St Andrew's cross",
+                        "bn": "রেলক্রসিং ক্রস চিহ্ন",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Croix de Saint-André » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "92",
+                        "fr": "Feu tricolore",
+                        "en": "Traffic light",
+                        "bn": "ট্রাফিক লাইট",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Feu tricolore » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "93",
+                        "fr": "Feu rouge",
+                        "en": "Red light",
+                        "bn": "লাল বাতি",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Feu rouge » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "94",
+                        "fr": "Feu orange",
+                        "en": "Amber light",
+                        "bn": "কমলা/হলুদ বাতি",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Feu orange » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "95",
+                        "fr": "Feu vert",
+                        "en": "Green light",
+                        "bn": "সবুজ বাতি",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Feu vert » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "96",
+                        "fr": "Feu orange clignotant",
+                        "en": "Flashing amber light",
+                        "bn": "ঝলকানো কমলা বাতি",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Feu orange clignotant » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "97",
+                        "fr": "Feu rouge clignotant",
+                        "en": "Flashing red light",
+                        "bn": "ঝলকানো লাল বাতি",
+                        "category": "Signaux",
+                        "phonetic": "",
+                        "example": "Le terme « Feu rouge clignotant » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "98",
+                        "fr": "Feu de brouillard",
+                        "en": "Fog light",
+                        "bn": "কুয়াশার বাতি",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Feu de brouillard » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "99",
+                        "fr": "Feu de croisement",
+                        "en": "Dipped / low beam",
+                        "bn": "লো-বিম হেডলাইট",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Feu de croisement » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "100",
+                        "fr": "Feu de route",
+                        "en": "Main beam / high beam",
+                        "bn": "হাই-বিম",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Feu de route » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "101",
+                        "fr": "Feu de position",
+                        "en": "Sidelight / position light",
+                        "bn": "পার্কিং/পজিশন লাইট",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Feu de position » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "102",
+                        "fr": "Feu de recul",
+                        "en": "Reversing light",
+                        "bn": "রিভার্স লাইট",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Feu de recul » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "103",
+                        "fr": "Feu stop",
+                        "en": "Brake light",
+                        "bn": "ব্রেক লাইট",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Feu stop » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "104",
+                        "fr": "Clignotant",
+                        "en": "Turn signal / indicator",
+                        "bn": "টার্ন সিগন্যাল",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Clignotant » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "105",
+                        "fr": "Avertisseur sonore",
+                        "en": "Horn",
+                        "bn": "হর্ন",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Avertisseur sonore » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "106",
+                        "fr": "Appel de phares",
+                        "en": "Headlight flash",
+                        "bn": "হেডলাইট ফ্ল্যাশ",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Appel de phares » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "107",
+                        "fr": "Feux de jour",
+                        "en": "Daytime running lights",
+                        "bn": "দিনের চলার লাইট",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Feux de jour » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "108",
+                        "fr": "Antibrouillard avant",
+                        "en": "Front fog lights",
+                        "bn": "সামনের কুয়াশার বাতি",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Antibrouillard avant » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "109",
+                        "fr": "Antibrouillard arrière",
+                        "en": "Rear fog light",
+                        "bn": "পেছনের কুয়াশার বাতি",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Antibrouillard arrière » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "110",
+                        "fr": "Catadioptre",
+                        "en": "Reflector",
+                        "bn": "আলো প্রতিফলক",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Catadioptre » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "111",
+                        "fr": "Éclairage",
+                        "en": "Lighting",
+                        "bn": "আলোক ব্যবস্থা",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Éclairage » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "112",
+                        "fr": "Plaque d'immatriculation",
+                        "en": "License plate",
+                        "bn": "গাড়ির নম্বর প্লেট",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Plaque d'immatriculation » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "113",
+                        "fr": "Carte grise",
+                        "en": "Vehicle registration document",
+                        "bn": "গাড়ির রেজিস্ট্রেশন কাগজ",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Carte grise » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "114",
+                        "fr": "Certificat d'immatriculation",
+                        "en": "Registration certificate",
+                        "bn": "রেজিস্ট্রেশন সার্টিফিকেট",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Certificat d'immatriculation » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "115",
+                        "fr": "Contrôle technique",
+                        "en": "Vehicle roadworthiness test",
+                        "bn": "গাড়ির টেকনিক্যাল পরীক্ষা",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Contrôle technique » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "116",
+                        "fr": "Assurance",
+                        "en": "Insurance",
+                        "bn": "বীমা",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Assurance » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "117",
+                        "fr": "Assurance responsabilité civile",
+                        "en": "Third-party liability insurance",
+                        "bn": "তৃতীয় পক্ষের দায়বদ্ধতা বীমা",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Assurance responsabilité civile » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "118",
+                        "fr": "Permis probatoire",
+                        "en": "Probationary driving licence",
+                        "bn": "প্রবেশনারি ড্রাইভিং লাইসেন্স",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Permis probatoire » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "119",
+                        "fr": "Points du permis",
+                        "en": "Licence points",
+                        "bn": "লাইসেন্সের পয়েন্ট",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Points du permis » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "120",
+                        "fr": "Retrait de points",
+                        "en": "Points deduction",
+                        "bn": "পয়েন্ট কেটে নেওয়া",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Retrait de points » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "121",
+                        "fr": "Suspension du permis",
+                        "en": "Licence suspension",
+                        "bn": "লাইসেন্স স্থগিত",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Suspension du permis » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "122",
+                        "fr": "Annulation du permis",
+                        "en": "Licence cancellation",
+                        "bn": "লাইসেন্স বাতিল",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Annulation du permis » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "123",
+                        "fr": "Infraction",
+                        "en": "Offence / violation",
+                        "bn": "আইনভঙ্গ",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Infraction » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "124",
+                        "fr": "Contravention",
+                        "en": "Traffic offence / ticketable offence",
+                        "bn": "ট্রাফিক অপরাধ",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Contravention » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "125",
+                        "fr": "Délit",
+                        "en": "Criminal offence",
+                        "bn": "ফৌজদারি অপরাধ",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Délit » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "126",
+                        "fr": "Amende",
+                        "en": "Fine",
+                        "bn": "জরিমানা",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Amende » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "127",
+                        "fr": "Contrôle routier",
+                        "en": "Roadside police check",
+                        "bn": "রাস্তায় পুলিশি পরীক্ষা",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Contrôle routier » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "128",
+                        "fr": "Forces de l'ordre",
+                        "en": "Law enforcement",
+                        "bn": "আইনশৃঙ্খলা বাহিনী",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Forces de l'ordre » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "129",
+                        "fr": "Conducteur",
+                        "en": "Driver",
+                        "bn": "চালক",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Conducteur » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "130",
+                        "fr": "Automobiliste",
+                        "en": "Motorist",
+                        "bn": "গাড়িচালক",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Automobiliste » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "131",
+                        "fr": "Passager",
+                        "en": "Passenger",
+                        "bn": "যাত্রী",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Passager » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "132",
+                        "fr": "Usager de la route",
+                        "en": "Road user",
+                        "bn": "সড়ক ব্যবহারকারী",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Usager de la route » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "133",
+                        "fr": "Piéton",
+                        "en": "Pedestrian",
+                        "bn": "পথচারী",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Piéton » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "134",
+                        "fr": "Cycliste",
+                        "en": "Cyclist",
+                        "bn": "সাইকেল চালক",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Cycliste » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "135",
+                        "fr": "Motocycliste",
+                        "en": "Motorcyclist",
+                        "bn": "মোটরসাইকেল চালক",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Motocycliste » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "136",
+                        "fr": "Motard",
+                        "en": "Motorcyclist / biker",
+                        "bn": "মোটরসাইকেল চালক",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Motard » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "137",
+                        "fr": "Deux-roues",
+                        "en": "Two-wheeler",
+                        "bn": "দুই চাকার যান",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Deux-roues » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "138",
+                        "fr": "Véhicule prioritaire",
+                        "en": "Priority vehicle",
+                        "bn": "অগ্রাধিকারপ্রাপ্ত যান",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Véhicule prioritaire » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "139",
+                        "fr": "Ambulance",
+                        "en": "Ambulance",
+                        "bn": "অ্যাম্বুলেন্স",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Ambulance » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "140",
+                        "fr": "Pompiers",
+                        "en": "Firefighters",
+                        "bn": "দমকল বাহিনী",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Pompiers » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "141",
+                        "fr": "Gendarmerie",
+                        "en": "Gendarmerie",
+                        "bn": "জেন্ডারমেরি",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Gendarmerie » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "142",
+                        "fr": "Police",
+                        "en": "Police",
+                        "bn": "পুলিশ",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Police » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "143",
+                        "fr": "Véhicule",
+                        "en": "Vehicle",
+                        "bn": "যানবাহন",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Véhicule » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "144",
+                        "fr": "Voiture",
+                        "en": "Car",
+                        "bn": "গাড়ি",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Voiture » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "145",
+                        "fr": "Motocyclette",
+                        "en": "Motorcycle",
+                        "bn": "মোটরসাইকেল",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Motocyclette » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "146",
+                        "fr": "Cyclomoteur",
+                        "en": "Moped",
+                        "bn": "মোপেড",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Cyclomoteur » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "147",
+                        "fr": "Trottinette électrique",
+                        "en": "Electric scooter",
+                        "bn": "ইলেকট্রিক স্কুটার",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Trottinette électrique » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "148",
+                        "fr": "Remorque",
+                        "en": "Trailer",
+                        "bn": "ট্রেলার",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Remorque » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "149",
+                        "fr": "Caravane",
+                        "en": "Caravan",
+                        "bn": "কারাভান",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Caravane » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "150",
+                        "fr": "Poids lourd",
+                        "en": "Heavy goods vehicle",
+                        "bn": "ভারী যানবাহন",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Poids lourd » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "151",
+                        "fr": "Camion",
+                        "en": "Truck",
+                        "bn": "ট্রাক",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Camion » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "152",
+                        "fr": "Autocar",
+                        "en": "Coach / bus",
+                        "bn": "দূরপাল্লার বাস",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Autocar » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "153",
+                        "fr": "Angle mort",
+                        "en": "Blind spot",
+                        "bn": "ব্লাইন্ড স্পট",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Angle mort » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "154",
+                        "fr": "Volant",
+                        "en": "Steering wheel",
+                        "bn": "স্টিয়ারিং হুইল",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Volant » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "155",
+                        "fr": "Frein",
+                        "en": "Brake",
+                        "bn": "ব্রেক",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Frein » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "156",
+                        "fr": "Frein de stationnement",
+                        "en": "Parking brake / handbrake",
+                        "bn": "হ্যান্ডব্রেক",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Frein de stationnement » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "157",
+                        "fr": "Freinage",
+                        "en": "Braking",
+                        "bn": "ব্রেক করা",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Freinage » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "158",
+                        "fr": "Accélérateur",
+                        "en": "Accelerator",
+                        "bn": "অ্যাক্সিলারেটর",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Accélérateur » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "159",
+                        "fr": "Embrayage",
+                        "en": "Clutch",
+                        "bn": "ক্লাচ",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Embrayage » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "160",
+                        "fr": "Boîte de vitesses",
+                        "en": "Gearbox",
+                        "bn": "গিয়ারবক্স",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Boîte de vitesses » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "161",
+                        "fr": "Levier de vitesses",
+                        "en": "Gear lever",
+                        "bn": "গিয়ার লিভার",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Levier de vitesses » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "162",
+                        "fr": "Marche arrière",
+                        "en": "Reverse gear",
+                        "bn": "রিভার্স গিয়ার",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Marche arrière » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "163",
+                        "fr": "Point mort",
+                        "en": "Neutral gear",
+                        "bn": "নিউট্রাল গিয়ার",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Point mort » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "164",
+                        "fr": "Première vitesse",
+                        "en": "First gear",
+                        "bn": "প্রথম গিয়ার",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Première vitesse » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "165",
+                        "fr": "Deuxième vitesse",
+                        "en": "Second gear",
+                        "bn": "দ্বিতীয় গিয়ার",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Deuxième vitesse » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "166",
+                        "fr": "Régime moteur",
+                        "en": "Engine speed / RPM",
+                        "bn": "ইঞ্জিনের গতি",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Régime moteur » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "167",
+                        "fr": "Moteur",
+                        "en": "Engine",
+                        "bn": "ইঞ্জিন",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Moteur » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "168",
+                        "fr": "Batterie",
+                        "en": "Battery",
+                        "bn": "ব্যাটারি",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Batterie » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "169",
+                        "fr": "Capot",
+                        "en": "Bonnet / hood",
+                        "bn": "ইঞ্জিনের ঢাকনা",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Capot » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "170",
+                        "fr": "Pare-brise",
+                        "en": "Windscreen / windshield",
+                        "bn": "উইন্ডস্ক্রিন",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Pare-brise » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "171",
+                        "fr": "Essuie-glace",
+                        "en": "Windshield wiper",
+                        "bn": "উইন্ডস্ক্রিন ওয়াইপার",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Essuie-glace » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "172",
+                        "fr": "Lave-glace",
+                        "en": "Windshield washer",
+                        "bn": "গ্লাস পরিষ্কারের তরল ব্যবস্থা",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Lave-glace » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "173",
+                        "fr": "Rétroviseur intérieur",
+                        "en": "Interior rear-view mirror",
+                        "bn": "ভেতরের রিয়ারভিউ মিরর",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Rétroviseur intérieur » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "174",
+                        "fr": "Rétroviseur extérieur",
+                        "en": "Exterior side mirror",
+                        "bn": "বাইরের সাইড মিরর",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Rétroviseur extérieur » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "175",
+                        "fr": "Pneu",
+                        "en": "Tyre / tire",
+                        "bn": "টায়ার",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Pneu » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "176",
+                        "fr": "Pneu sous-gonflé",
+                        "en": "Under-inflated tyre",
+                        "bn": "কম বাতাসের টায়ার",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Pneu sous-gonflé » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "177",
+                        "fr": "Pneu surgonflé",
+                        "en": "Over-inflated tyre",
+                        "bn": "অতিরিক্ত বাতাসের টায়ার",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Pneu surgonflé » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "178",
+                        "fr": "Crevaison",
+                        "en": "Puncture",
+                        "bn": "টায়ার পাংচার",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Crevaison » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "179",
+                        "fr": "Éclatement",
+                        "en": "Blowout",
+                        "bn": "টায়ার ফেটে যাওয়া",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Éclatement » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "180",
+                        "fr": "Bande de roulement",
+                        "en": "Tread",
+                        "bn": "টায়ারের গ্রুভ/ট্রেড",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Bande de roulement » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "181",
+                        "fr": "Adhérence",
+                        "en": "Grip / traction",
+                        "bn": "গ্রিপ",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Adhérence » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "182",
+                        "fr": "Aquaplanage",
+                        "en": "Aquaplaning / hydroplaning",
+                        "bn": "পানিতে টায়ার ভেসে যাওয়া",
+                        "category": "Météo",
+                        "phonetic": "",
+                        "example": "Le terme « Aquaplanage » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "183",
+                        "fr": "Chaussée humide",
+                        "en": "Wet road",
+                        "bn": "ভেজা রাস্তা",
+                        "category": "Météo",
+                        "phonetic": "",
+                        "example": "Le terme « Chaussée humide » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "184",
+                        "fr": "Chaussée mouillée",
+                        "en": "Wet roadway",
+                        "bn": "ভেজা সড়ক",
+                        "category": "Météo",
+                        "phonetic": "",
+                        "example": "Le terme « Chaussée mouillée » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "185",
+                        "fr": "Verglas",
+                        "en": "Black ice / icy surface",
+                        "bn": "বরফের পাতলা আস্তরণ",
+                        "category": "Météo",
+                        "phonetic": "",
+                        "example": "Le terme « Verglas » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "186",
+                        "fr": "Neige",
+                        "en": "Snow",
+                        "bn": "তুষার",
+                        "category": "Météo",
+                        "phonetic": "",
+                        "example": "Le terme « Neige » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "187",
+                        "fr": "Gel",
+                        "en": "Frost / freezing",
+                        "bn": "বরফ জমা",
+                        "category": "Météo",
+                        "phonetic": "",
+                        "example": "Le terme « Gel » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "188",
+                        "fr": "Pluie",
+                        "en": "Rain",
+                        "bn": "বৃষ্টি",
+                        "category": "Météo",
+                        "phonetic": "",
+                        "example": "Le terme « Pluie » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "189",
+                        "fr": "Averse",
+                        "en": "Rain shower",
+                        "bn": "বৃষ্টির ঝাপটা",
+                        "category": "Météo",
+                        "phonetic": "",
+                        "example": "Le terme « Averse » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "190",
+                        "fr": "Brouillard",
+                        "en": "Fog",
+                        "bn": "কুয়াশা",
+                        "category": "Météo",
+                        "phonetic": "",
+                        "example": "Le terme « Brouillard » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "191",
+                        "fr": "Vent",
+                        "en": "Wind",
+                        "bn": "বাতাস",
+                        "category": "Météo",
+                        "phonetic": "",
+                        "example": "Le terme « Vent » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "192",
+                        "fr": "Tempête",
+                        "en": "Storm",
+                        "bn": "ঝড়",
+                        "category": "Météo",
+                        "phonetic": "",
+                        "example": "Le terme « Tempête » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "193",
+                        "fr": "Intempéries",
+                        "en": "Bad weather",
+                        "bn": "খারাপ আবহাওয়া",
+                        "category": "Météo",
+                        "phonetic": "",
+                        "example": "Le terme « Intempéries » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "194",
+                        "fr": "Éblouissement",
+                        "en": "Glare / dazzling",
+                        "bn": "চোখ ধাঁধানো আলো",
+                        "category": "Météo",
+                        "phonetic": "",
+                        "example": "Le terme « Éblouissement » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "195",
+                        "fr": "Soleil rasant",
+                        "en": "Low sun / glaring sun",
+                        "bn": "নিচু সূর্যের তীব্র আলো",
+                        "category": "Météo",
+                        "phonetic": "",
+                        "example": "Le terme « Soleil rasant » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "196",
+                        "fr": "Nuit",
+                        "en": "Night",
+                        "bn": "রাত",
+                        "category": "Météo",
+                        "phonetic": "",
+                        "example": "Le terme « Nuit » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "197",
+                        "fr": "Distance de sécurité",
+                        "en": "Safe following distance",
+                        "bn": "নিরাপদ দূরত্ব",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Distance de sécurité » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "198",
+                        "fr": "Distance d'arrêt",
+                        "en": "Stopping distance",
+                        "bn": "থামার মোট দূরত্ব",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Distance d'arrêt » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "199",
+                        "fr": "Distance de freinage",
+                        "en": "Braking distance",
+                        "bn": "ব্রেকিং দূরত্ব",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Distance de freinage » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "200",
+                        "fr": "Temps de réaction",
+                        "en": "Reaction time",
+                        "bn": "প্রতিক্রিয়ার সময়",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Temps de réaction » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "201",
+                        "fr": "Réaction",
+                        "en": "Reaction",
+                        "bn": "প্রতিক্রিয়া",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Réaction » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "202",
+                        "fr": "Ralentir",
+                        "en": "To slow down",
+                        "bn": "গতি কমানো",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Ralentir » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "203",
+                        "fr": "Accélérer",
+                        "en": "To accelerate",
+                        "bn": "গতি বাড়ানো",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Accélérer » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "204",
+                        "fr": "S'arrêter",
+                        "en": "To stop",
+                        "bn": "থামা",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « S'arrêter » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "205",
+                        "fr": "Démarrer",
+                        "en": "To start",
+                        "bn": "চালু/শুরু করা",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Démarrer » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "206",
+                        "fr": "Stationner",
+                        "en": "To park",
+                        "bn": "পার্ক করা",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Stationner » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "207",
+                        "fr": "Se garer",
+                        "en": "To park",
+                        "bn": "পার্ক করা",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Se garer » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "208",
+                        "fr": "S'insérer",
+                        "en": "To merge / join traffic",
+                        "bn": "চলাচলে প্রবেশ করা",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « S'insérer » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "209",
+                        "fr": "S'engager",
+                        "en": "To enter / proceed into",
+                        "bn": "প্রবেশ করা",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « S'engager » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "210",
+                        "fr": "Se rabattre",
+                        "en": "To move back into lane",
+                        "bn": "নিজের লেনে ফিরে আসা",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Se rabattre » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "211",
+                        "fr": "Tourner",
+                        "en": "To turn",
+                        "bn": "মোড় নেওয়া",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Tourner » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "212",
+                        "fr": "Tourner à droite",
+                        "en": "Turn right",
+                        "bn": "ডানে মোড় নেওয়া",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Tourner à droite » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "213",
+                        "fr": "Tourner à gauche",
+                        "en": "Turn left",
+                        "bn": "বামে মোড় নেওয়া",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Tourner à gauche » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "214",
+                        "fr": "Faire demi-tour",
+                        "en": "Make a U-turn",
+                        "bn": "ইউ-টার্ন নেওয়া",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Faire demi-tour » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "215",
+                        "fr": "Reculer",
+                        "en": "To reverse",
+                        "bn": "পেছনে যাওয়া",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Reculer » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "216",
+                        "fr": "Doubler",
+                        "en": "To overtake / pass",
+                        "bn": "ওভারটেক করা",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Doubler » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "217",
+                        "fr": "Croiser",
+                        "en": "To pass an oncoming vehicle",
+                        "bn": "সামনাসামনি অতিক্রম করা",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Croiser » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "218",
+                        "fr": "Laisser passer",
+                        "en": "Let pass",
+                        "bn": "পথ ছেড়ে দেওয়া",
+                        "category": "Priorités",
+                        "phonetic": "",
+                        "example": "Le terme « Laisser passer » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "219",
+                        "fr": "Avoir la priorité",
+                        "en": "Have right of way",
+                        "bn": "অগ্রাধিকার থাকা",
+                        "category": "Priorités",
+                        "phonetic": "",
+                        "example": "Le terme « Avoir la priorité » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "220",
+                        "fr": "Perdre la priorité",
+                        "en": "Lose right of way",
+                        "bn": "অগ্রাধিকার হারানো",
+                        "category": "Priorités",
+                        "phonetic": "",
+                        "example": "Le terme « Perdre la priorité » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "221",
+                        "fr": "Route prioritaire",
+                        "en": "Priority road",
+                        "bn": "অগ্রাধিকার সড়ক",
+                        "category": "Priorités",
+                        "phonetic": "",
+                        "example": "Le terme « Route prioritaire » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "222",
+                        "fr": "Fin de priorité",
+                        "en": "End of priority road",
+                        "bn": "অগ্রাধিকার সড়কের সমাপ্তি",
+                        "category": "Priorités",
+                        "phonetic": "",
+                        "example": "Le terme « Fin de priorité » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "223",
+                        "fr": "Stop",
+                        "en": "Stop",
+                        "bn": "সম্পূর্ণ থামা",
+                        "category": "Priorités",
+                        "phonetic": "",
+                        "example": "Le terme « Stop » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "224",
+                        "fr": "Arrêt absolu",
+                        "en": "Complete stop",
+                        "bn": "সম্পূর্ণ থামা",
+                        "category": "Priorités",
+                        "phonetic": "",
+                        "example": "Le terme « Arrêt absolu » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "225",
+                        "fr": "Cédez-le-passage",
+                        "en": "Give-way sign",
+                        "bn": "পথ ছাড়ার সংকেত",
+                        "category": "Priorités",
+                        "phonetic": "",
+                        "example": "Le terme « Cédez-le-passage » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "226",
+                        "fr": "Refus de priorité",
+                        "en": "Failure to give way",
+                        "bn": "অগ্রাধিকার না দেওয়া",
+                        "category": "Priorités",
+                        "phonetic": "",
+                        "example": "Le terme « Refus de priorité » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "227",
+                        "fr": "Usager vulnérable",
+                        "en": "Vulnerable road user",
+                        "bn": "ঝুঁকিপূর্ণ সড়ক ব্যবহারকারী",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Usager vulnérable » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "228",
+                        "fr": "Enfant",
+                        "en": "Child",
+                        "bn": "শিশু",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Enfant » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "229",
+                        "fr": "Personne âgée",
+                        "en": "Elderly person",
+                        "bn": "বয়স্ক ব্যক্তি",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Personne âgée » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "230",
+                        "fr": "Personne à mobilité réduite",
+                        "en": "Person with reduced mobility",
+                        "bn": "চলাচলে অক্ষম/কম সক্ষম ব্যক্তি",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Personne à mobilité réduite » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "231",
+                        "fr": "Cycliste prioritaire",
+                        "en": "Cyclist with priority",
+                        "bn": "অগ্রাধিকারপ্রাপ্ত সাইকেল আরোহী",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Cycliste prioritaire » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "232",
+                        "fr": "Casque",
+                        "en": "Helmet",
+                        "bn": "হেলমেট",
+                        "category": "Usagers",
+                        "phonetic": "",
+                        "example": "Le terme « Casque » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "233",
+                        "fr": "Gilet de sécurité",
+                        "en": "Safety vest",
+                        "bn": "নিরাপত্তা জ্যাকেট",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Gilet de sécurité » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "234",
+                        "fr": "Triangle de présignalisation",
+                        "en": "Warning triangle",
+                        "bn": "সতর্কতা ত্রিভুজ",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Triangle de présignalisation » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "235",
+                        "fr": "Dispositif de retenue",
+                        "en": "Restraint system",
+                        "bn": "নিরাপত্তা ধরে রাখার ব্যবস্থা",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Dispositif de retenue » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "236",
+                        "fr": "Siège enfant",
+                        "en": "Child seat",
+                        "bn": "শিশুর আসন",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Siège enfant » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "237",
+                        "fr": "Rehausseur",
+                        "en": "Booster seat",
+                        "bn": "বুস্টার সিট",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Rehausseur » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "238",
+                        "fr": "Airbag",
+                        "en": "Airbag",
+                        "bn": "এয়ারব্যাগ",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Airbag » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "239",
+                        "fr": "Appuie-tête",
+                        "en": "Headrest",
+                        "bn": "হেডরেস্ট",
+                        "category": "Véhicule",
+                        "phonetic": "",
+                        "example": "Le terme « Appuie-tête » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "240",
+                        "fr": "Éthylotest",
+                        "en": "Breathalyzer screening device",
+                        "bn": "অ্যালকোহল পরীক্ষা যন্ত্র",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Éthylotest » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "241",
+                        "fr": "Éthylomètre",
+                        "en": "Breath alcohol analyzer",
+                        "bn": "শ্বাসে অ্যালকোহল মাপার যন্ত্র",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Éthylomètre » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "242",
+                        "fr": "Ivresse",
+                        "en": "Drunkenness",
+                        "bn": "মাতাল অবস্থা",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Ivresse » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "243",
+                        "fr": "Stupéfiants",
+                        "en": "Drugs / narcotics",
+                        "bn": "মাদকদ্রব্য",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Stupéfiants » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "244",
+                        "fr": "Dépistage",
+                        "en": "Screening / testing",
+                        "bn": "পরীক্ষা / শনাক্তকরণ",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Dépistage » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "245",
+                        "fr": "Téléphone au volant",
+                        "en": "Using a phone while driving",
+                        "bn": "গাড়ি চালানোর সময় ফোন ব্যবহার",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Téléphone au volant » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "246",
+                        "fr": "Oreillette",
+                        "en": "Earphone / earpiece",
+                        "bn": "কানে লাগানো ইয়ারপিস",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Oreillette » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "247",
+                        "fr": "Somnolence",
+                        "en": "Drowsiness",
+                        "bn": "ঘুমঘুম ভাব",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Somnolence » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "248",
+                        "fr": "Fatigue",
+                        "en": "Fatigue",
+                        "bn": "ক্লান্তি",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Fatigue » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "249",
+                        "fr": "Vigilance",
+                        "en": "Alertness",
+                        "bn": "সতর্কতা",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Vigilance » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "250",
+                        "fr": "Distraction",
+                        "en": "Distraction",
+                        "bn": "মনোযোগ বিচ্যুতি",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Distraction » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "251",
+                        "fr": "Concentration",
+                        "en": "Concentration",
+                        "bn": "মনোযোগ",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Concentration » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "252",
+                        "fr": "Éco-conduite",
+                        "en": "Eco-driving",
+                        "bn": "পরিবেশবান্ধব ড্রাইভিং",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Éco-conduite » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "253",
+                        "fr": "Consommation de carburant",
+                        "en": "Fuel consumption",
+                        "bn": "জ্বালানি খরচ",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Consommation de carburant » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "254",
+                        "fr": "Pollution",
+                        "en": "Pollution",
+                        "bn": "দূষণ",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Pollution » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "255",
+                        "fr": "Émissions",
+                        "en": "Emissions",
+                        "bn": "নিঃসরণ",
+                        "category": "Règles",
+                        "phonetic": "",
+                        "example": "Le terme « Émissions » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "256",
+                        "fr": "Accident",
+                        "en": "Accident",
+                        "bn": "দুর্ঘটনা",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Accident » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "257",
+                        "fr": "Accident corporel",
+                        "en": "Accident involving injury",
+                        "bn": "আহতসহ দুর্ঘটনা",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Accident corporel » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "258",
+                        "fr": "Dommages matériels",
+                        "en": "Material damage",
+                        "bn": "সম্পত্তির ক্ষতি",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Dommages matériels » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "259",
+                        "fr": "Blessé",
+                        "en": "Injured person",
+                        "bn": "আহত ব্যক্তি",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Blessé » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "260",
+                        "fr": "Victime",
+                        "en": "Victim",
+                        "bn": "দুর্ঘটনার শিকার",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Victime » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "261",
+                        "fr": "Témoin",
+                        "en": "Witness",
+                        "bn": "সাক্ষী",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Témoin » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "262",
+                        "fr": "Secours",
+                        "en": "Emergency services",
+                        "bn": "জরুরি সেবা",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Secours » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "263",
+                        "fr": "Alerter",
+                        "en": "To alert / call emergency services",
+                        "bn": "জরুরি সাহায্য ডাকা",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Alerter » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "264",
+                        "fr": "Protéger",
+                        "en": "To protect",
+                        "bn": "নিরাপদ করা",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Protéger » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "265",
+                        "fr": "Porter secours",
+                        "en": "Give first aid / assistance",
+                        "bn": "প্রাথমিক সাহায্য করা",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Porter secours » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "266",
+                        "fr": "Numéro d'urgence",
+                        "en": "Emergency number",
+                        "bn": "জরুরি নম্বর",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Numéro d'urgence » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "267",
+                        "fr": "Appel d'urgence",
+                        "en": "Emergency call",
+                        "bn": "জরুরি ফোন",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Appel d'urgence » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "268",
+                        "fr": "112",
+                        "en": "European emergency number",
+                        "bn": "ইউরোপীয় জরুরি নম্বর",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « 112 » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "269",
+                        "fr": "15",
+                        "en": "SAMU emergency medical number",
+                        "bn": "SAMU চিকিৎসা জরুরি নম্বর",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « 15 » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "270",
+                        "fr": "18",
+                        "en": "Fire brigade emergency number",
+                        "bn": "দমকল জরুরি নম্বর",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « 18 » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "271",
+                        "fr": "17",
+                        "en": "Police / gendarmerie emergency number",
+                        "bn": "পুলিশ/জেন্ডারমেরি জরুরি নম্বর",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « 17 » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "272",
+                        "fr": "Respirer",
+                        "en": "To breathe",
+                        "bn": "শ্বাস নেওয়া",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Respirer » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "273",
+                        "fr": "Respiration",
+                        "en": "Breathing",
+                        "bn": "শ্বাসপ্রশ্বাস",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Respiration » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "274",
+                        "fr": "Inconscient",
+                        "en": "Unconscious",
+                        "bn": "অচেতন",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Inconscient » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "275",
+                        "fr": "Conscient",
+                        "en": "Conscious",
+                        "bn": "সচেতন",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Conscient » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "276",
+                        "fr": "Hémorragie",
+                        "en": "Severe bleeding",
+                        "bn": "রক্তক্ষরণ",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Hémorragie » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "277",
+                        "fr": "Saignement",
+                        "en": "Bleeding",
+                        "bn": "রক্তপাত",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Saignement » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "278",
+                        "fr": "Plaie",
+                        "en": "Wound",
+                        "bn": "ক্ষত",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Plaie » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "279",
+                        "fr": "Brûlure",
+                        "en": "Burn",
+                        "bn": "পোড়া",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Brûlure » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "280",
+                        "fr": "Fracture",
+                        "en": "Fracture",
+                        "bn": "হাড় ভাঙা",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Fracture » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "281",
+                        "fr": "Malaise",
+                        "en": "Feeling unwell / medical incident",
+                        "bn": "অসুস্থতা",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Malaise » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "282",
+                        "fr": "Casque de moto",
+                        "en": "Motorcycle helmet",
+                        "bn": "মোটরসাইকেল হেলমেট",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Casque de moto » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "283",
+                        "fr": "Retirer le casque",
+                        "en": "Remove the helmet",
+                        "bn": "হেলমেট খুলে ফেলা",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Retirer le casque » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            },
+            {
+                        "id": "284",
+                        "fr": "Ne pas déplacer",
+                        "en": "Do not move",
+                        "bn": "সরাবেন না",
+                        "category": "Secourisme",
+                        "phonetic": "",
+                        "example": "Le terme « Ne pas déplacer » peut apparaître dans une question du Code de la route.",
+                        "icon": "fa-car"
+            }
+];
+
+let vocabulary=[], targetLanguage='en', currentCategory='ALL', dictCategory='ALL';
+let currentCardIndex=0,isCardFlipped=false;
+let xp=parseInt(localStorage.getItem('codevocab_xp')||'0'), streak=parseInt(localStorage.getItem('codevocab_streak')||'1');
+let currentQuizWord=null,quizLives=3,quizAnswered=false;
+
+const categoryOrder=['ALL','Signaux','Priorités','Règles','Véhicule','Autoroute','Usagers','Météo','Secourisme'];
+const categoryIcons={ALL:'📚',Signaux:'🛑',Priorités:'⚠️',Règles:'📜',Véhicule:'🚗',Autoroute:'🛣️',Usagers:'🚶',Météo:'🌧️',Secourisme:'🚑'};
+
+window.addEventListener('DOMContentLoaded',()=>{
+ loadVocabularyData(); updateStatsDisplay(); renderCategoryBars(); renderFlashcard(); renderDictionary(); initQuizQuestion();
+});
+
+function loadVocabularyData(){
+ const saved=localStorage.getItem('codevocab_data');
+ if(saved){try{vocabulary=JSON.parse(saved)}catch(e){vocabulary=[...defaultVocabulary]}}
+ else{vocabulary=[...defaultVocabulary];saveVocabularyData()}
+}
+function saveVocabularyData(){localStorage.setItem('codevocab_data',JSON.stringify(vocabulary))}
+function resetToDefaultData(){
+ if(confirm('Voulez-vous vraiment réinitialiser tout le vocabulaire aux données par défaut ?')){
+  vocabulary=[...defaultVocabulary];saveVocabularyData();renderCategoryBars();renderFlashcard();renderDictionary();renderAdminList();alert('Vocabulaire réinitialisé avec succès !');
+ }
+}
+function speakWord(text){
+ if('speechSynthesis' in window){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='fr-FR';u.rate=.85;window.speechSynthesis.speak(u)}
+ else alert("La synthèse vocale n'est pas supportée par votre navigateur.");
+}
+function speakCurrentWord(){const list=getFilteredVocab();if(list.length&&list[currentCardIndex])speakWord(list[currentCardIndex].fr)}
+function speakQuizWord(){if(currentQuizWord)speakWord(currentQuizWord.fr)}
+function setTargetLanguage(lang){
+ targetLanguage=lang;
+ const en=document.getElementById('lang-en-btn'),bn=document.getElementById('lang-bn-btn');
+ en.className=lang==='en'?'px-2.5 py-1 rounded-lg text-xs font-bold bg-white text-duoBlue shadow-sm':'px-2.5 py-1 rounded-lg text-xs font-bold text-slate-500';
+ bn.className=lang==='bn'?'px-2.5 py-1 rounded-lg text-xs font-bold bg-white text-duoBlue shadow-sm':'px-2.5 py-1 rounded-lg text-xs font-bold text-slate-500';
+ renderFlashcard();renderDictionary();initQuizQuestion();
+}
+function addXP(points){xp+=points;localStorage.setItem('codevocab_xp',xp);updateStatsDisplay()}
+function updateStatsDisplay(){document.getElementById('xp-count').innerText=xp;document.getElementById('streak-count').innerText=streak}
+
+function switchTab(tab){
+ ['learn','quiz','dictionary'].forEach(x=>document.getElementById('tab-'+x).classList.add('hidden'));
+ document.getElementById('tab-'+tab).classList.remove('hidden');
+ document.querySelectorAll('.nav-tab').forEach(b=>{b.classList.remove('text-duoGreen');b.classList.add('text-slate-400')});
+ const active=document.getElementById('nav-btn-'+tab);if(active){active.classList.remove('text-slate-400');active.classList.add('text-duoGreen')}
+ if(tab==='quiz'&&!currentQuizWord)initQuizQuestion();
+}
+function getFilteredVocab(){return currentCategory==='ALL'?vocabulary:vocabulary.filter(v=>v.category===currentCategory)}
+function renderCategoryBars(){
+ const learn=document.getElementById('learn-category-bar'),dict=document.getElementById('dict-category-bar'),select=document.getElementById('input-cat');
+ learn.innerHTML='';dict.innerHTML='';select.innerHTML='';
+ const cats=categoryOrder.filter(c=>c==='ALL'||vocabulary.some(v=>v.category===c));
+ cats.forEach(cat=>{
+  const b=document.createElement('button');b.dataset.cat=cat;b.onclick=()=>setCategory(cat);
+  b.className='cat-btn shrink-0 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold '+(currentCategory===cat?'bg-duoGreen text-white':'bg-slate-100 text-slate-600 hover:bg-slate-200');
+  b.innerText=categoryIcons[cat]+' '+(cat==='ALL'?'Tous':cat);learn.appendChild(b);
+  const d=document.createElement('button');d.dataset.cat=cat;d.onclick=()=>filterDictCat(cat);
+  d.className='dict-cat-btn px-3 py-1 rounded-xl text-xs font-bold '+(dictCategory===cat?'bg-duoBlue text-white':'bg-slate-100 text-slate-600 hover:bg-slate-200');
+  d.innerText=cat==='ALL'?'Tous':categoryIcons[cat]+' '+cat;dict.appendChild(d);
+  if(cat!=='ALL'){const o=document.createElement('option');o.value=cat;o.textContent=cat;select.appendChild(o)}
+ });
+}
+function setCategory(cat){currentCategory=cat;currentCardIndex=0;isCardFlipped=false;renderCategoryBars();renderFlashcard()}
+function flipCard(){const inner=document.getElementById('flashcard-inner');isCardFlipped=!isCardFlipped;inner.classList.toggle('rotate-y-180',isCardFlipped)}
+function renderFlashcard(){
+ const list=getFilteredVocab(),inner=document.getElementById('flashcard-inner');isCardFlipped=false;inner.classList.remove('rotate-y-180');
+ if(!list.length){document.getElementById('fc-french').innerText='Aucun mot';document.getElementById('flashcard-counter').innerText='0 / 0';return}
+ if(currentCardIndex>=list.length)currentCardIndex=0;
+ const item=list[currentCardIndex];
+ document.getElementById('fc-category').innerText=item.category;document.getElementById('fc-french').innerText=item.fr;
+ document.getElementById('fc-phonetic').innerText=item.phonetic?'['+item.phonetic+']':'';
+ const tr=targetLanguage==='en'?item.en:item.bn;const t=document.getElementById('fc-translation');t.innerText=tr;t.classList.toggle('font-bangla',targetLanguage==='bn');
+ document.getElementById('fc-example').innerText=item.example?'"'+item.example+'"':'';
+ document.getElementById('flashcard-counter').innerText=`${currentCardIndex+1} / ${list.length}`;
+ document.getElementById('fc-icon').className=`fa-solid ${item.icon||'fa-car'} text-4xl text-duoGreen mb-2`;
+}
+function nextCard(){const l=getFilteredVocab();if(l.length){currentCardIndex=(currentCardIndex+1)%l.length;renderFlashcard()}}
+function prevCard(){const l=getFilteredVocab();if(l.length){currentCardIndex=(currentCardIndex-1+l.length)%l.length;renderFlashcard()}}
+
+function initQuizQuestion(){
+ quizAnswered=false;document.getElementById('quiz-footer').classList.add('hidden');
+ if(vocabulary.length<4)return;
+ currentQuizWord=vocabulary[Math.floor(Math.random()*vocabulary.length)];
+ document.getElementById('quiz-target-word').innerText=currentQuizWord.fr;
+ const wrong=vocabulary.filter(x=>x.id!==currentQuizWord.id).sort(()=>Math.random()-.5).slice(0,3);
+ const options=[currentQuizWord,...wrong].sort(()=>Math.random()-.5),grid=document.getElementById('quiz-options-grid');grid.innerHTML='';
+ options.forEach((o,i)=>{
+  const b=document.createElement('button');b.className='quiz-opt-btn btn-3d text-left p-4 bg-white border-2 border-slate-200 shadow-slate-200 rounded-2xl font-bold text-slate-700 hover:bg-slate-50 flex items-center space-x-3 transition-all';
+  b.onclick=()=>checkQuizAnswer(o,b);b.innerHTML=`<span class="w-8 h-8 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-xs font-black text-slate-400">${i+1}</span><span class="flex-grow ${targetLanguage==='bn'?'font-bangla text-lg':''}">${targetLanguage==='en'?o.en:o.bn}</span>`;
+  grid.appendChild(b);
+ });
+}
+function checkQuizAnswer(selected,btn){
+ if(quizAnswered)return;quizAnswered=true;
+ const ok=selected.id===currentQuizWord.id,footer=document.getElementById('quiz-footer'),icon=document.getElementById('quiz-status-icon');
+ document.querySelectorAll('.quiz-opt-btn').forEach(b=>{b.disabled=true;b.classList.add('opacity-80')});
+ if(ok){
+  btn.classList.remove('bg-white','border-slate-200');btn.classList.add('bg-emerald-100','border-duoGreen','text-emerald-800');
+  footer.className='rounded-2xl p-4 flex items-center justify-between border-2 bg-emerald-100 border-duoGreen text-emerald-900';
+  icon.className='w-10 h-10 rounded-full flex items-center justify-center text-xl text-white font-bold bg-duoGreen';icon.innerHTML='<i class="fa-solid fa-check"></i>';
+  document.getElementById('quiz-status-title').innerText='Bravo !';document.getElementById('quiz-status-desc').innerText='+10 XP !';addXP(10);
+  if(typeof confetti==='function')confetti({particleCount:50,spread:60,origin:{y:.8}});
+  const p=document.getElementById('quiz-progress');p.style.width=Math.min(parseInt(p.style.width||0)+20,100)+'%';
+ }else{
+  btn.classList.remove('bg-white','border-slate-200');btn.classList.add('bg-red-100','border-duoRed','text-red-800');
+  footer.className='rounded-2xl p-4 flex items-center justify-between border-2 bg-red-100 border-duoRed text-red-900';
+  icon.className='w-10 h-10 rounded-full flex items-center justify-center text-xl text-white font-bold bg-duoRed';icon.innerHTML='<i class="fa-solid fa-xmark"></i>';
+  document.getElementById('quiz-status-title').innerText='Dommage !';document.getElementById('quiz-status-desc').innerText='La bonne réponse était : "'+(targetLanguage==='en'?currentQuizWord.en:currentQuizWord.bn)+'"';
+  quizLives=Math.max(0,quizLives-1);document.getElementById('quiz-lives').innerText=quizLives;
+ }
+ footer.classList.remove('hidden');
+}
+function nextQuizQuestion(){if(quizLives<=0){quizLives=3;document.getElementById('quiz-lives').innerText=3;document.getElementById('quiz-progress').style.width='0%'}initQuizQuestion()}
+
+function filterDictionary(){renderDictionary()}
+function filterDictCat(cat){dictCategory=cat;renderCategoryBars();renderDictionary()}
+function renderDictionary(){
+ const box=document.getElementById('dict-list'),q=(document.getElementById('dict-search-input').value||'').toLowerCase().trim();box.innerHTML='';
+ const filtered=vocabulary.filter(x=>(dictCategory==='ALL'||x.category===dictCategory)&&(x.fr.toLowerCase().includes(q)||x.en.toLowerCase().includes(q)||x.bn.toLowerCase().includes(q)));
+ document.getElementById('dict-count').innerText=filtered.length;
+ if(!filtered.length){box.innerHTML='<div class="col-span-full text-center py-12 bg-white rounded-2xl border-2 border-slate-200"><i class="fa-solid fa-magnifying-glass text-4xl text-slate-300 mb-2"></i><p class="font-bold text-slate-500">Aucun mot trouvé</p></div>';return}
+ filtered.forEach(item=>{
+  const card=document.createElement('div');card.className='bg-white p-4 rounded-2xl border-2 border-slate-200 shadow-sm flex items-start justify-between hover:border-duoBlue transition';
+  const safeFr=item.fr.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  card.innerHTML=`<div class="space-y-1"><div class="flex items-center space-x-2"><span class="text-xs font-black uppercase text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">${item.category}</span>${item.phonetic?`<span class="text-xs font-semibold text-slate-400 italic">[${item.phonetic}]</span>`:''}</div><h3 class="text-lg font-black text-slate-800">${item.fr}</h3><p class="text-sm font-bold text-duoBlue">${item.en}</p><p class="text-sm font-bold text-emerald-600 font-bangla">${item.bn}</p>${item.example?`<p class="text-xs text-slate-400 italic pt-1">"${item.example}"</p>`:''}</div><button onclick="speakWord('${safeFr}')" class="w-10 h-10 bg-slate-100 hover:bg-duoBlue/10 text-slate-600 rounded-xl flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-volume-high"></i></button>`;
+  box.appendChild(card);
+ });
+}
+function openAdminModal(){document.getElementById('admin-modal').classList.remove('hidden');renderAdminList()}
+function closeAdminModal(){document.getElementById('admin-modal').classList.add('hidden')}
+function renderAdminList(){
+ const list=document.getElementById('admin-vocab-list');document.getElementById('admin-total-count').innerText=vocabulary.length;list.innerHTML='';
+ vocabulary.forEach(item=>{
+  const row=document.createElement('div');row.className='flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold';
+  row.innerHTML=`<div class="truncate max-w-[240px]"><span class="text-slate-800">${item.fr}</span><span class="text-slate-400"> (${item.en})</span></div><button onclick="deleteVocab('${item.id}')" class="text-duoRed hover:bg-red-50 p-1.5 rounded-lg"><i class="fa-solid fa-trash"></i></button>`;
+  list.appendChild(row);
+ });
+}
+function handleAddNewVocab(e){
+ e.preventDefault();const fr=input('input-fr'),en=input('input-en'),bn=input('input-bn'),category=input('input-cat'),phonetic=input('input-phonetic'),example=input('input-example');
+ if(!fr||!en||!bn){alert('Veuillez remplir les champs obligatoires.');return}
+ vocabulary.unshift({id:Date.now().toString(),fr,en,bn,category,phonetic,example,icon:'fa-car'});saveVocabularyData();e.target.reset();renderAdminList();renderCategoryBars();renderFlashcard();renderDictionary();alert(`Le mot "${fr}" a été ajouté !`);
+}
+function input(id){return document.getElementById(id).value.trim()}
+function deleteVocab(id){if(confirm('Êtes-vous sûr de vouloir supprimer ce mot ?')){vocabulary=vocabulary.filter(v=>v.id!==id);saveVocabularyData();renderAdminList();renderCategoryBars();renderFlashcard();renderDictionary()}}
+</script>
+</body>
+</html>
