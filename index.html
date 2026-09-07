@@ -1514,6 +1514,14 @@
             speakQuizWord();
         }
 
+        // Base classes for the quiz feedback bar — must always be preserved
+        // when swapping in the correct/wrong color state below, otherwise
+        // "pointer-events-auto" gets dropped (button becomes unclickable,
+        // since its parent has pointer-events-none) and "max-w-2xl mx-auto"
+        // gets dropped (bar stretches full-width, so taps land on whatever
+        // is underneath it instead — e.g. the bottom nav).
+        const QUIZ_FOOTER_BASE_CLASS = "pointer-events-auto max-w-2xl mx-auto rounded-2xl p-4 flex items-center justify-between gap-3 border-2 shadow-xl transition-all";
+
         function checkQuizAnswer(selectedOption, selectedBtn) {
             if (quizAnswered) return;
             quizAnswered = true;
@@ -1535,7 +1543,7 @@
                 selectedBtn.classList.remove('bg-white', 'border-slate-200');
                 selectedBtn.classList.add('bg-emerald-100', 'border-duoGreen', 'text-emerald-800');
 
-                footer.className = "rounded-2xl p-4 flex items-center justify-between border-2 bg-emerald-100 border-duoGreen text-emerald-900";
+                footer.className = `${QUIZ_FOOTER_BASE_CLASS} bg-emerald-100 border-duoGreen text-emerald-900`;
                 statusIcon.className = "w-10 h-10 rounded-full flex items-center justify-center text-xl text-white font-bold bg-duoGreen";
                 statusIcon.innerHTML = '<i class="fa-solid fa-check"></i>';
                 statusTitle.innerText = "Bravo ! (C'est exact)";
@@ -1567,7 +1575,7 @@
                     }
                 });
 
-                footer.className = "rounded-2xl p-4 flex items-center justify-between border-2 bg-red-100 border-duoRed text-red-900";
+                footer.className = `${QUIZ_FOOTER_BASE_CLASS} bg-red-100 border-duoRed text-red-900`;
                 statusIcon.className = "w-10 h-10 rounded-full flex items-center justify-center text-xl text-white font-bold bg-duoRed";
                 statusIcon.innerHTML = '<i class="fa-solid fa-xmark"></i>';
                 statusTitle.innerText = "Dommage !";
